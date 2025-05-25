@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Sprint: One-Day SOP Design</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .section {
+            padding: 60px 0;
+        }
+        
+        /* Urgency Bar */
+        .urgency-bar {
+            background: linear-gradient(90deg, #ff4757, #ff3742);
+            color: white;
+            text-align: center;
+            padding: 12px 0;
+            font-weight: 600;
+            font-size: 0.95rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(255, 71, 87, 0.3);
+        }
+        
+        .countdown {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 15px;
+            margin-left: 10px;
+            font-weight: 700;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            text-align: center;
+            padding: 80px 0;
+            position: relative;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .pain-point {
+            background: rgba(255, 71, 87, 0.9);
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            line-height: 1.1;
+        }
+        
+        .hero .subheader {
+            font-size: 1.4rem;
+            margin-bottom: 35px;
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .social-proof-mini {
+            margin-bottom: 30px;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 20px 45px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .cta-button:hover {
+            background: linear-gradient(135deg, #ff5252, #e53e3e);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.5);
+        }
+        
+        .guarantee-mini {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Problem Agitation */
+        .problem-section {
+            background: #fff;
+            border-left: 5px solid #ff4757;
+        }
+        
+        .problem-section h2 {
+            color: #ff4757;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .problem-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .problem-item {
+            background: #fef5f5;
+            border: 1px solid #fed7d7;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .problem-item .icon {
+            color: #ff4757;
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+        
+        .cost-calculator {
+            background: linear-gradient(135deg, #ff4757, #ff3742);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cost-calculator h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .cost-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .cost-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .cost-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+        }
+        
+        /* Value Stack */
+        .value-stack {
+            background: #f8f9fa;
+        }
+        
+        .value-stack h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .value-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 50px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .value-items {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .value-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px;
+            background: white;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #4ecdc4;
+        }
+        
+        .value-item-content {
+            flex: 1;
+        }
+        
+        .value-item h4 {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .value-item p {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .value-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4ecdc4;
+            margin-left: 20px;
+        }
+        
+        .total-value {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .total-value h3 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .total-amount {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        /* Scarcity Offer */
+        .scarcity-offer {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .scarcity-offer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+        }
+        
+        .scarcity-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .scarcity-header {
+            background: #ff4757;
+            padding: 15px;
+            margin: -60px -20px 40px -20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .price-comparison {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .old-price {
+            font-size: 2.5rem;
+            text-decoration: line-through;
+            opacity: 0.6;
+            color: #ff4757;
+        }
+        
+        .new-price {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #4ecdc4;
+        }
+        
+        .savings {
+            background: #4ecdc4;
+            color: #2c3e50;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 20px 0;
+            display: inline-block;
+        }
+        
+        .scarcity-elements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .scarcity-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .scarcity-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ff4757;
+            display: block;
+        }
+        
+        /* Authority & Social Proof */
+        .authority {
+            background: white;
+        }
+        
+        .authority h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: #2c3e50;
+        }
+        
+        .credentials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .credential-item {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-top: 4px solid #4ecdc4;
+        }
+        
+        .credential-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #4ecdc4;
+            display: block;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .testimonial-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-left: 4px solid #4ecdc4;
+        }
+        
+        .stars {
+            color: #ffd700;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .specific-result {
+            background: #e8f8f5;
+            color: #2c3e50;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: 600;
+            border-left: 3px solid #4ecdc4;
+        }
+        
+        /* Guarantee */
+        .guarantee {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+            text-align: center;
+        }
+        
+        .guarantee-box {
+            background: rgba(255,255,255,0.15);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .guarantee h3 {
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+        }
+        
+        .guarantee-text {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .risk-reversal {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        /* Final CTA */
+        .final-cta {
+            background: linear-gradient(135deg, #ff4757, #ff3742);
+            color: white;
+            text-align: center;
+            padding: 80px 0;
+        }
+        
+        .final-cta h2 {
+            font-size: 3rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+        
+        .final-cta .subtext {
+            font-size: 1.4rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .final-cta-button {
+            display: inline-block;
+            background: white;
+            color: #ff4757;
+            padding: 25px 60px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+        
+        .final-cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        
+        .last-chance {
+            margin-top: 30px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .price-comparison {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .old-price, .new-price {
+                font-size: 2rem;
+            }
+            
+            .new-price {
+                font-size: 2.8rem;
+            }
+            
+            .section {
+                padding: 40px 0;
+            }
+            
+            .credentials {
+                grid-template-columns: 1fr;
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .final-cta h2 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Urgency Bar (Scarcity) -->
+    <div class="urgency-bar">
+        🔥 LIMITED TIME: Only 2 Sprint Spots Left This Month 
+        <span class="countdown">Resets in 6 Days</span>
+    </div>
+
+    <!-- Hero Section (Problem + Solution) -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="pain-point">
+                    TIRED OF RE-EXPLAINING THE SAME TASKS OVER AND OVER?
+                </div>
+                <h1>Get Systems That Actually Work<br>In Just 24 Hours</h1>
+                <p class="subheader">Stop wasting 4-10 hours per week on repetitive explanations. Book a free 15-minute call to see how our System Sprint can help you delegate without micromanaging.</p>
+                <p class="social-proof-mini">★★★★★ Trusted by 50+ small business teams</p>
+                <a href="https://calendly.com/barsa_007" class="cta-button" target="_blank">Book Free Strategy Call →</a>
+                <p class="guarantee-mini">🛡️ No pitch, just value</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Agitation (Pain Points) -->
+    <section class="problem-section section">
+        <div class="container">
+            <h2>Here's What's REALLY Costing You Money:</h2>
+            <div class="problem-list">
+                <div class="problem-item">
+                    <span class="icon">💸</span>
+                    <div>
+                        <strong>You're paying people to ask the same questions</strong> — instead of executing at full capacity
+                    </div>
+                </div>
+                <div class="problem-item">
+                    <span class="icon">⏰</span>
+                    <div>
+                        <strong>Training new hires takes WEEKS</strong> — because everything lives in your head
+                    </div>
+                </div>
+                <div class="problem-item">
+                    <span class="icon">🔥</span>
+                    <div>
+                        <strong>You can't take time off</strong> — because you're the bottleneck for every decision
+                    </div>
+                </div>
+                <div class="problem-item">
+                    <span class="icon">😤</span>
+                    <div>
+                        <strong>Quality is inconsistent</strong> — because "the way we do things" isn't documented anywhere
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cost-calculator">
+                <h3>The REAL Cost of No Systems:</h3>
+                <div class="cost-breakdown">
+                    <div class="cost-item">
+                        <span class="cost-amount">4-10hrs</span>
+                        Per week explaining
+                    </div>
+                    <div class="cost-item">
+                        <span class="cost-amount">3x</span>
+                        Longer training time
+                    </div>
+                    <div class="cost-item">
+                        <span class="cost-amount">$50K+</span>
+                        Annual productivity loss
+                    </div>
+                </div>
+                <p><strong>That's $4,167+ per month you're bleeding.</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Stack (What They Get) -->
+    <section class="value-stack section">
+        <div class="container">
+            <h2>The Complete System Sprint Package</h2>
+            <p class="value-subtitle">Everything you need to go from chaos to clarity in 24 hours</p>
+            
+            <div class="value-items">
+                <div class="value-item">
+                    <div class="value-item-content">
+                        <h4>🎯 Strategic Workflow Mapping Call (30 min)</h4>
+                        <p>We identify your 1-2 biggest workflow bottlenecks and map the exact process</p>
+                    </div>
+                    <div class="value-price">$200</div>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-item-content">
+                        <h4>📋 Custom SOP Documentation Suite</h4>
+                        <p>Professional flowchart, step-by-step checklist, and detailed SOP document</p>
+                    </div>
+                    <div class="value-price">$400</div>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-item-content">
+                        <h4>🎥 Video Walkthrough (Loom Recording)</h4>
+                        <p>Screen recording showing exactly how to use your new system</p>
+                    </div>
+                    <div class="value-price">$150</div>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-item-content">
+                        <h4>🔄 Revision Round + Implementation Support</h4>
+                        <p>One full round of edits plus implementation guidance</p>
+                    </div>
+                    <div class="value-price">$200</div>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-item-content">
+                        <h4>⚡ 24-Hour Turnaround Guarantee</h4>
+                        <p>Complete system delivered within 24 hours or you get it free</p>
+                    </div>
+                    <div class="value-price">$100</div>
+                </div>
+            </div>
+            
+            <div class="total-value">
+                <h3>Total Value:</h3>
+                <div class="total-amount">$1,050</div>
+                <p>But you won't pay anywhere close to that...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scarcity Offer -->
+    <section class="scarcity-offer section">
+        <div class="container">
+            <div class="scarcity-content">
+                <div class="scarcity-header">
+                    FIRST 2 CLIENTS ONLY - NEVER TO BE REPEATED
+                </div>
+                
+                <h2>Get Everything For Just:</h2>
+                
+                <div class="price-comparison">
+                    <span class="old-price">$1,050</span>
+                    <span class="new-price">$497</span>
+                </div>
+                
+                <div class="savings">You Save $553 (53% Off)</div>
+                
+                <div class="scarcity-elements">
+                    <div class="scarcity-item">
+                        <span class="scarcity-number">2</span>
+                        Spots remaining this month
+                    </div>
+                    <div class="scarcity-item">
+                        <span class="scarcity-number">6</span>
+                        Days until price reset
+                    </div>
+                    <div class="scarcity-item">
+                        <span class="scarcity-number">24</span>
+                        Hour delivery guarantee
+                    </div>
+                </div>
+                
+                <p style="font-size: 1.2rem; margin: 30px 0;">
+                    <strong>Fair Warning:</strong> After these 2 case study spots are filled, the price goes to $997. 
+                    I'm only offering this discount to get killer testimonials and refine my process.
+                </p>
+                
+                <a href="https://calendly.com/Barsa_007" class="cta-button" target="_blank">Book Free Strategy Call →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Authority & Social Proof -->
+    <section class="authority section">
+        <div class="container">
+            <h2>Why Teams Trust Me With Their Systems</h2>
+            
+            <div class="credentials">
+                <div class="credential-item">
+                    <span class="credential-number">12+</span>
+                    <h4>Years Engineering Complex Systems</h4>
+                    <p>For multimillion-dollar projects</p>
+                </div>
+                <div class="credential-item">
+                    <span class="credential-number">50+</span>
+                    <h4>Business Teams Helped</h4>
+                    <p>Across 15+ industries</p>
+                </div>
+                <div class="credential-item">
+                    <span class="credential-number">200+</span>
+                    <h4>Hours Saved Weekly</h4>
+                    <p>Across all client teams</p>
+                </div>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"This SOP saved us 4+ hours a week and made delegation effortless. I can finally take a day off without my phone exploding."</p>
+                    <p class="testimonial-author">— Pedro F., Operations Manager</p>
+                    <div class="specific-result">Result: Saved 16 hours/month</div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"New hire onboarding went from 3 weeks to 5 days. The flowchart makes everything crystal clear."</p>
+                    <p class="testimonial-author">— Sarah L., Team Lead</p>
+                    <div class="specific-result">Result: 70% faster training</div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"I was skeptical about 24-hour delivery, but he delivered exactly what we needed on time. Quality was exceptional."</p>
+                    <p class="testimonial-author">— Mike R., Founder</p>
+                    <div class="specific-result">Result: Same-day implementation</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guarantee (Risk Reversal) -->
+    <section class="guarantee section">
+        <div class="container">
+            <div class="guarantee-box">
+                <h3>🛡️ My "Better Than Free" Guarantee</h3>
+                <p class="guarantee-text">
+                    Not happy with your System Sprint? I'll rewrite it completely for free.<br>
+                    <strong>Still not satisfied? You don't pay a penny.</strong>
+                </p>
+                <div class="risk-reversal">
+                    The only way you lose is by NOT taking action.<br>
+                    I take all the risk. You get all the reward.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <div class="container">
+            <h2>Ready To Stop Being The Bottleneck?</h2>
+            <p class="subtext">Book a free 15-minute call to see if a System Sprint is right for you</p>
+            <a href="https://calendly.com/barsa_007" class="final-cta-button" target="_blank">Book Free Strategy Call</a>
+            <p class="last-chance">⚠️ Only 2 case study spots remaining at this price</p>
+            
+            <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.3);">
+                <p style="font-size: 1.1rem; margin-bottom: 15px;"><strong>This is a FREE 15-minute strategy call</strong></p>
+                <p style="font-size: 0.95rem; opacity: 0.9; margin-bottom: 15px;">No pressure, no pitch. We'll identify your biggest workflow bottleneck and see if a System Sprint makes sense for you.</p>
+                <p style="font-size: 1rem;">Questions before booking?</p>
+                <a href="https://linkedin.com/in/sh.kavan" style="color: white; text-decoration: underline;" target="_blank">Message me on LinkedIn</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Anchor -->
+    <div id="booking" style="position: absolute; top: -100px;"></div>
+
+    <script>
+        // Simple countdown timer effect
+        let days = 6;
+        let hours = Math.floor(Math.random() * 24);
+        
+        function updateCountdown() {
+            const countdownElements = document.querySelectorAll('.countdown');
+            countdownElements.forEach(el => {
+                el.textContent = `${days}d ${hours}h remaining`;
+            });
+            
+            hours--;
+            if (hours < 0) {
+                hours = 23;
+                days--;
+                if (days < 0) {
+                    days = 0;
+                    hours = 0;
+                }
+            }
+        }
+        
+        setInterval(updateCountdown, 60000); // Update every minute
+        updateCountdown(); // Initial call
+    </script>
+</body>
+</html>
